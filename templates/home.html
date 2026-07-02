@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthetix | Adaptive RAG Engine</title>
+    <style>
+        :root {
+            --bg-main: #09090b;
+            --bg-card: #18181b;
+            --border-color: #27272a;
+            --text-main: #fafafa;
+            --text-muted: #a1a1aa;
+            --accent-color: #7c3aed; /* Deep R&D Indigo */
+            --accent-hover: #6d28d9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        /* --- Navigation Bar --- */
+        nav {
+            height: 70px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            background-color: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .logo-icon {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: radial-gradient(circle at center, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            color: #c4b5fd;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: clamp(40px, 5vw, 64px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+            max-width: 800px;
+            line-height: 1.1;
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 18px;
+            max-width: 600px;
+            margin-bottom: 36px;
+        }
+
+        .cta-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+        }
+
+        .cta-btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        /* --- Features Section --- */
+        .features {
+            padding: 100px 5vw;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            transition: border-color 0.2s;
+        }
+
+        .card:hover {
+            border-color: #52525b;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* --- Architecture Section --- */
+        .architecture {
+            background-color: #111115;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 100px 5vw;
+        }
+
+        .arch-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .arch-title {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .arch-text {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            Synthetix Engine
+        </div>
+        <ul class="nav-links">
+            <li><a href="#features">Capabilities</a></li>
+            <li><a href="#how-it-works">How it Works</a></li>
+            <li><a href="{% url 'chat' %}" style="color: var(--text-main);">Launch Console</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="badge">
+            <span class="logo-icon"></span> R&D Machine Learning Workspace
+        </div>
+        <h1>Adaptive Knowledge Retrieval meets AI Synthesis</h1>
+        <p class="hero-desc">Test our specialized, multi-stage pipeline designed to parse complex medical information, preserve historical context, and deliver pinpoint evaluations.</p>
+        <a href="{% url 'chat' %}" class="cta-btn">Access the Workspace</a>
+    </section>
+
+    <section class="features" id="features">
+        <div class="card">
+            <div class="card-title">Multi-Source Synthesis</div>
+            <p class="card-desc">Unlike general chat interfaces, Synthetix pulls from dense, localized vector stores—merging raw retrieved context directly with historical chat memory to give fully-synthesized responses.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Session Leak Prevention</div>
+            <p class="card-desc">Equipped with a relational architecture that separates master conversational threads from individual messages, completely eliminating memory leaks during deep multi-turn interactions.</p>
+        </div>
+        <div class="card">
+            <div class="card-title">Structured Context Views</div>
+            <p class="card-desc">No more broken line breaks or strange spaces. Our engine is natively trained to present tabular guidelines, such as oncology classifications and physiological differences, cleanly and legibly.</p>
+        </div>
+    </section>
+
+    <section class="architecture" id="how-it-works">
+        <div class="arch-content">
+            <h2 class="arch-title">Under the Hood: The Hybrid Architecture</h2>
+            <p class="arch-text">
+                To achieve extreme performance, security, and scalability, Synthetix uses a robust, decoupled micro-framework. When you send a query, the system interacts with a multi-layered pipeline working seamlessly behind the scenes.
+            </p>
+            <p class="arch-text">
+                <strong>Django Core & Sessions:</strong> Django manages the interface, cookies, session IDs, and safe persistent database storage (sessions and messages). This ensures your conversation thread is safely secured and tracked.
+            </p>
+            <p class="arch-text">
+                <strong>FastAPI Model Calling:</strong> The resource-heavy language model and RAG orchestrator are deployed using an isolated, high-speed FastAPI endpoint, plugged perfectly into the Django environment. This isolates calculating tasks from your main web interface, letting the system fetch vector indices, assemble context history, and stream responses at lightning speeds without blocking web workers.
+            </p>
+            <p class="arch-text">
+                <strong>Adaptive Generation:</strong> The system extracts the most recent messages, pairs them with relevant document vectors, and feeds the block to the local AI model, which has been strictly system-prompted to drop citation spam and format natural, conversational layouts.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div>&copy; 2026 Synthetix RAG Workspace.</div>
+        <div>Machine Learning R&D Environment</div>
+    </footer>
+
+</body>
+</html>

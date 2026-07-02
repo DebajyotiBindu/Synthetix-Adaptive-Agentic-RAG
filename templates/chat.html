@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise AI RAG Workspace</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-sidebar: #17171a;
+            --bg-main: #202123;
+            --border-color: #2f3037;
+            --user-bubble: #343541;
+            --ai-bubble: #202123;
+            --text-main: #ececf1;
+            --text-muted: #8e8ea0;
+            --accent-color: #7c3aed;
+            --accent-hover: #1a7f64;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .sidebar-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding-left: 8px;
+            margin-bottom: 10px;
+        }
+
+        .history-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 12px;
+            border-radius: 6px;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-btn:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Main Chat Window --- */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 100%;
+        }
+
+        .chat-header {
+            height: 60px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            background-color: var(--bg-main);
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--accent-color);
+        }
+
+        .chat-body {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 180px; /* Leave space for fixed input panel */
+            scroll-behavior: smooth;
+        }
+
+        .message-row {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 32px 16px;
+            border-bottom: 1px solid transparent;
+        }
+
+        .user-row {
+            background-color: var(--user-bubble);
+        }
+
+        .ai-row {
+            background-color: #444654;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .message-content {
+            width: 100%;
+            max-width: 768px;
+            display: flex;
+            gap: 24px;
+            line-height: 1.7;
+            font-size: 15px;
+            overflow-x: auto; 
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .user-row .avatar {
+            background-color: #5436da;
+            color: white;
+        }
+
+        .ai-row .avatar {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .text-block {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        /* --- Upgraded Markdown Table & Text Elements Styling --- */
+        .text-block h2, .text-block h3 {
+            margin-top: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .text-block p {
+            margin-bottom: 12px;
+        }
+
+        .text-block table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .text-block th, .text-block td {
+            padding: 12px 16px;
+            border: 1px solid #4da68625;
+        }
+
+        .text-block th {
+            background-color: rgba(16, 163, 127, 0.1);
+            color: var(--accent-color);
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .text-block tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .typing-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            height: 24px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background-color: var(--text-muted);
+            border-radius: 50%;
+            animation: blink 1.4s infinite both;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: .2s; }
+        .typing-dots span:nth-child(3) { animation-delay: .4s; }
+
+        @keyframes blink {
+            0% { opacity: .2; }
+            20% { opacity: 1; }
+            100% { opacity: .2; }
+        }
+
+        /* --- Input Panel --- */
+        .input-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 24px 0;
+            background: linear-gradient(to top, var(--bg-main) 70%, transparent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            width: 100%;
+            max-width: 768px;
+            background-color: #40414f;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        textarea {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 15px;
+            resize: none;
+            height: 24px;
+            font-family: inherit;
+            outline: none;
+            padding: 4px 0;
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .send-btn:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .send-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-title">Recent Threads</div>
+        <button class="history-btn" onclick="loadSession('current')">Current Active Session</button>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <span>Synthetix Core</span>
+            <span class="status-badge">System Operational</span>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+            <div class="message-row ai-row">
+                <div class="message-content">
+                    <div class="avatar">AI</div>
+                    <div class="text-block">Initializing Synthetix Adaptive RAG environment. You can ask me any medical information you need.</div>
+                </div>
+            </div>
+        </div>
+
+        <form class="input-panel" id="queryForm">
+            {% csrf_token %}
+            <div class="input-wrapper">
+                <textarea id="queryInput" placeholder="Send a message..." required></textarea>
+                <button type="submit" class="send-btn" id="submitBtn" title="Send Message">
+                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('queryForm');
+        const chatBody = document.getElementById('chatBody');
+        const queryInput = document.getElementById('queryInput');
+        const submitBtn = document.getElementById('submitBtn');
+        let currentSessionId = "";
+
+        // Dynamically track and adjust input sizes smoothly
+        queryInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            const calculatedHeight = Math.min(this.scrollHeight, 150);
+            this.style.height = calculatedHeight + 'px';
+        });
+
+        // Submit message natively on Enter, allow line breaks with Shift+Enter
+        queryInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const queryText = queryInput.value.trim();
+            if (!queryText) return;
+
+            // Append User Interaction
+            appendMessage(queryText, 'user-row', 'U');
+            queryInput.value = '';
+            queryInput.style.height = '24px';
+            
+            setLoading(true);
+
+            // Append Placeholder AI Response Block containing a dynamic animated dot indicator
+            const { textBlockDiv, rowDiv } = appendMessage('', 'ai-row', 'AI');
+            textBlockDiv.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+            
+            try {
+                const formData = new FormData(form);
+                formData.set('query', queryText);
+                if (currentSessionId) {
+                    formData.set('session_id', currentSessionId);
+                }
+
+                const response = await fetch("{% url 'chat' %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                const data = await response.json();
+                
+                if (data.session_id) {
+                    currentSessionId = data.session_id;
+                }
+
+                if (data.response) {
+                    textBlockDiv.innerHTML = ''; // Purge typing indicator dots
+                    await streamMarkdown(data.response, textBlockDiv, rowDiv);
+                } else {
+                    textBlockDiv.textContent = "Error: Did not receive expected system payload structure.";
+                }
+
+            } catch (err) {
+                console.error(err);
+                textBlockDiv.textContent = "Error: Connection interrupted with the local RAG orchestrator.";
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        function appendMessage(text, rowClassName, avatarInitial) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = `message-row ${rowClassName}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'avatar';
+            avatarDiv.textContent = avatarInitial;
+            
+            const textBlockDiv = document.createElement('div');
+            textBlockDiv.className = 'text-block';
+            textBlockDiv.textContent = text; // Set raw text (markdown parser runs on streaming for AI)
+
+            contentDiv.appendChild(avatarDiv);
+            contentDiv.appendChild(textBlockDiv);
+            rowDiv.appendChild(contentDiv);
+            
+            chatBody.appendChild(rowDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+            
+            return { textBlockDiv, rowDiv };
+        }
+
+        function setLoading(isLoading) {
+            submitBtn.disabled = isLoading;
+            queryInput.disabled = isLoading;
+        }
+
+        // Token simulation stream rendering directly as parsed rendered Markdown HTML
+        async function streamMarkdown(markdownText, textBlock, rowElement) {
+            // Split raw string token block incrementally
+            const wordsAndSpaces = markdownText.match(/(\S+|\s+)/g) || [markdownText];
+            let accumulatedMarkdown = "";
+            
+            for (const token of wordsAndSpaces) {
+                accumulatedMarkdown += token;
+                // Parse incrementally rendered Markdown into native fully updated HTML structure
+                textBlock.innerHTML = marked.parse(accumulatedMarkdown);
+                chatBody.scrollTop = chatBody.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 12)); // Streaming reading pacing tick
+            }
+        }
+        
+        function loadSession(id) {
+            console.log("Switched threads: " + id);
+        }
+    </script>
+</body>
+</html>

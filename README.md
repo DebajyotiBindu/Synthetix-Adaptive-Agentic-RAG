@@ -1,1 +1,1 @@
-# Synthetix- ADaptive Agentic Rag
+# Synthetix- Adaptive Agentic Rag
