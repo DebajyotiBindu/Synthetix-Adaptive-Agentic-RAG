@@ -1,6 +1,7 @@
 # Synthetix- Adaptive Agentic Rag
 
 Synthetix is an Agaptive Agentic RAG-based SaaS platform designed for autonomous medical information synthesis. It moves beyond simple "chat" by utilizing an intelligent orchestrator to manage complex workflows, search tool utilization, and context-aware retrieval.
+
 *Note*-The RAG has been fed with medical data chunks so the Agent primarily can retrieve medical data and answer efficiently with respect to medical queries for now although with the use of web tool it can perform web search and provide answer on multiple contexts but still its highly advised to use this model for medical query purposes for now.I am trying to feed the RAG with more data,upgrade the dictionary used for storing frequent common questions to REDIS and change the instructions and guard rails provided to the LLM for increasing the model's usage across multiple domains but it will come in later updates.
 
 ## DATA (PDFs) used for this:
