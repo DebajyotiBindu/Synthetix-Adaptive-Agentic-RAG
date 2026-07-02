@@ -67,8 +67,10 @@ class Vectordb:
             print(f"Error in database {e}")
 
 def main():
-    data_path=r"D:\mlproject20\data"
-    db_path=r"D:\mlproject20\vectordb"
+    # data_path=r"D:\mlproject20\data"
+    # db_path=r"D:\mlproject20\vectordb"
+    data_path=os.getenv("DATA_PATH","/app/data")
+    db_path=os.getenv("DB_PATH","/app/vector_db")
 
     db_obj=Vectordb(db_path=db_path,data_path=data_path)
     db_name="medical_data"

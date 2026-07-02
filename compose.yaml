@@ -15,6 +15,11 @@ services:
       - 8001:8001
     volumes:
       - .:/app
+      - /data:/app/data
+      - /vector_db:/app/vector_db
+    environment:
+      - DATA_PATH=/app/data
+      - DB_PATH=/app/vector_db
     command: uvicorn api.main:app --reload --port 8001
   
   Django-engine:
@@ -31,10 +36,3 @@ services:
       - .:/app
     command: gunicorn home.wsgi:application --bind 0.0.0.0:8000
   
-  vector_db:
-    image: chromadb/chroma:latest
-    container_name: vector_db
-    ports:
-      - 5000:5000
-    volumes:
-      - ./vector_db:/vector_database
