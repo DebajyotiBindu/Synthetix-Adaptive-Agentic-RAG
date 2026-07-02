@@ -24,8 +24,17 @@ services:
       - 8000:8000
     environment:
       - FASTAPI_URL=http://api:8001
+      - DJANGO_SETTINGS_MODULE=home.settings
     depends_on:
       - Fastapi-engine
     volumes:
       - .:/app
     command: gunicorn home.wsgi:application --bind 0.0.0.0:8000
+  
+  vector_db:
+    image: chromadb/chroma:latest
+    container_name: vector_db
+    ports:
+      - 5000:5000
+    volumes:
+      - ./vector_db:/vector_database
