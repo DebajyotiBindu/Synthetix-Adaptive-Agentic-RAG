@@ -73,8 +73,8 @@ class Retriever:
         return compressed_docs
 
 def main():
-    db_path=r"D:\mlproject20\vectordb"
-    data_path=r"D:\mlproject20\data"
+    data_path=os.getenv("DATA_PATH", "/app/data")
+    db_path=os.getenv("DB_PATH", "/app/vector_db")
     query=input()
 
     retrieve_obj=Retriever(db_path=db_path,user_query=query,data_path=data_path)

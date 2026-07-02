@@ -73,8 +73,8 @@ class Generator:
 
 def main():
     user_query=input()
-    db_path=r"D:\mlproject20\vectordb"
-    data_path=r"D:\mlproject20\data"
+    data_path=os.getenv("DATA_PATH", "/app/data")
+    db_path=os.getenv("DB_PATH", "/app/vector_db")    
 
     generator_obj=Generator(db_path=db_path,data_path=data_path,user_query=user_query)
     response=generator_obj.generate()

@@ -29,8 +29,8 @@ class Embedding:
             print(f"Error in embedding {e}")
 
 def main():
-    root_path=r"D:\mlproject20\data"
-    loader_obj=Loader(root_path)
+    data_path=os.getenv("DATA_PATH", "/app/data")
+    loader_obj=Loader(data_path)
 
     main_docs=[]
     loader_obj.load(main_docs=main_docs)
