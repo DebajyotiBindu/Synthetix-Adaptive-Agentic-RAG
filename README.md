@@ -27,6 +27,15 @@ Synthetix is an Agaptive Agentic RAG-based SaaS platform designed for autonomous
 * Professional UI/UX: A high-tech, dark-mode interface with native markdown streaming for clean, readable medical/technical data visualization.
 * Production-Ready: Built with Gunicorn, secure user-privilege management, and layered Docker builds.
 
+## Performance
+
+Pipeline latency: 22–24 s
+Average tokens: 2165–2655
+Routing:
+- Confidence ≥ 0.7 → Vector retrieval
+- 0.5–0.7 → Hybrid retrieval
+- < 0.5 → Web search
+
 ## Tech Stack
 * Backend: Python 3.11, Django, FastAPI
 * AI/LLM: Custom RAG Pipeline
