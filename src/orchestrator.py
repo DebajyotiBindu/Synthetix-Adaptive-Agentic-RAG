@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from huggingface_hub import InferenceClient
 from langchain_core.output_parsers import PydanticOutputParser
+from langsmith import traceable
 import sys
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
@@ -26,6 +27,7 @@ def load(db_path, data_path, query):
     ])
     return context
 
+@traceable
 def orchestrator(query: str):
     data_path=os.getenv("DATA_PATH", "/app/data")
     db_path=os.getenv("DB_PATH", "/app/vector_db")

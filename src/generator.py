@@ -2,6 +2,7 @@ import os
 from src.retrieval import Retriever
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
+from langsmith import traceable
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ class Generator:
         compressed_docs=retrieve_obj.rerank()
         return compressed_docs
     
+    @traceable
     def generate(self,context:str):
         # compressed_docs=self.load()
 

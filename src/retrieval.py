@@ -5,6 +5,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_classic.retrievers.contextual_compression import ContextualCompressionRetriever
 from langchain_classic.retrievers.document_compressors import CrossEncoderReranker
 from langchain_community.cross_encoders import HuggingFaceCrossEncoder
+from langsmith import traceable
 
 
 class Retriever:
@@ -22,6 +23,7 @@ class Retriever:
 
         return embedding
 
+    @traceable
     def search(self,db_name:str="medical_data"):
         try:
             embeddings=self.load()
@@ -46,6 +48,7 @@ class Retriever:
         except Exception as e:
             print(f"Error in searching {e}")
     
+    @traceable
     def rerank(self):
         cross_encoder=HuggingFaceCrossEncoder(
             model_name="ms-marco-MiniLM-L-6-v2"
