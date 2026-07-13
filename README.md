@@ -21,6 +21,10 @@ Synthetix is an Agaptive Agentic RAG-based SaaS platform designed for autonomous
 * Action: The Agent triggers the appropriate tool, manages the context window, and performs the synthesis.
 * Response: The final, curated response is streamed back to the Django UI.
 
+## Visual representation of Architectural workflow
+<img width="932" height="702" alt="image" src="https://github.com/user-attachments/assets/e0e2ae82-a691-4a2f-8855-a2f7b56fe15e" />
+
+
 ## Key Features
 * Decoupled Micro-services: Independent deployment of Django and FastAPI ensures your web interface never blocks heavy AI processing.
 * Session-Persistent RAG: Seamlessly merges historical conversation threads with real-time vector-retrieved context.
