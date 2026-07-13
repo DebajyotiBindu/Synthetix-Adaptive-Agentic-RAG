@@ -24,7 +24,7 @@ Synthetix is an Agaptive Agentic RAG-based SaaS platform designed for autonomous
 ## Visual representation of Architectural workflow
 <img width="932" height="702" alt="image" src="https://github.com/user-attachments/assets/e0e2ae82-a691-4a2f-8855-a2f7b56fe15e" />
 
-*Note* Initially I was going to besutiful soup for web scraping but later for simplicity sticked with tavily since it was doing the web crawling as well.
+*Note* Initially I was going to beautiful soup (BS4) for web scraping but later for simplicity sticked with tavily since it was doing the web crawling as well.
 
 ## Key Features
 * Decoupled Micro-services: Independent deployment of Django and FastAPI ensures your web interface never blocks heavy AI processing.
